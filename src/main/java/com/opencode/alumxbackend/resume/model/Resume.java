@@ -17,7 +17,7 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String userId;
 
     @Column(nullable = false)
@@ -35,4 +35,3 @@ public class Resume {
     private boolean isDeleted;
     private LocalDateTime uploadedAt;
 }
-

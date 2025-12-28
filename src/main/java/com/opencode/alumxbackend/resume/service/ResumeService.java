@@ -36,7 +36,15 @@ public class ResumeService {
         File directory = new File(uploadDir);
         if (!directory.exists()) directory.mkdirs();
 
-        String filePath = uploadDir + "/" + userId + "_" + file.getOriginalFilename();
+
+        String extension = contentType.equals("application/pdf") ? ".pdf" : ".docx";
+        String filePath = uploadDir + "/" + userId + "_resume" + extension;
+
+        resumeRepository.findByUserId(userId).ifPresent(old -> {
+            File oldFile = new File(old.getFileUrl());
+            if (oldFile.exists()) oldFile.delete();
+        });
+        
         Files.write(new File(filePath).toPath(), file.getBytes());
 
         Resume resume = Resume.builder()
