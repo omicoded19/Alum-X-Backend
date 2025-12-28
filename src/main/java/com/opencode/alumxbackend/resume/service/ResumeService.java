@@ -1,7 +1,7 @@
 package com.opencode.alumxbackend.resume.service;
 
-import com.opencode.alumxbackend.resume.exception.InvalidResumeException;
-import com.opencode.alumxbackend.resume.exception.ResumeNotFoundException;
+import com.opencode.alumxbackend.common.exception.Errors.InvalidResumeException;
+import com.opencode.alumxbackend.common.exception.Errors.ResumeNotFoundException;
 import com.opencode.alumxbackend.resume.model.Resume;
 import com.opencode.alumxbackend.resume.repository.ResumeRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +36,22 @@ public class ResumeService {
         File directory = new File(uploadDir);
         if (!directory.exists()) directory.mkdirs();
 
-        String filePath = uploadDir + "/" + userId + "_" + file.getOriginalFilename();
+
+        String extension = contentType.equals("application/pdf") ? ".pdf" : ".docx";
+        String filePath = uploadDir + "/" + userId + "_resume" + extension;
+
+        resumeRepository.findByUserId(userId).ifPresent(old -> {
+            File oldFile = new File(old.getFileUrl());
+            if (oldFile.exists()) oldFile.delete();
+        });
+        
         Files.write(new File(filePath).toPath(), file.getBytes());
 
         Resume resume = Resume.builder()
                 .userId(userId)
                 .fileName(file.getOriginalFilename())
                 .fileType(contentType)
-                .filePath(filePath)
+                .fileUrl(filePath)
                 .uploadedAt(LocalDateTime.now())
                 .build();
 

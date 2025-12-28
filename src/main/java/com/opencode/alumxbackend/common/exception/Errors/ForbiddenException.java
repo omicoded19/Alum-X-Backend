@@ -1,13 +1,12 @@
-package com.opencode.alumxbackend.common.exception;
+package com.opencode.alumxbackend.common.exception.Errors;
+
+import lombok.NoArgsConstructor;
 
 /**
  * Exception thrown when a user is authenticated but lacks permission to access a resource
  */
+@NoArgsConstructor
 public class ForbiddenException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-
-    public ForbiddenException() {}
-
     public ForbiddenException(String message) {
         super(message);
     }

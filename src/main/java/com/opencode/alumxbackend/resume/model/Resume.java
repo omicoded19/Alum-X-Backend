@@ -17,7 +17,7 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String userId;
 
     @Column(nullable = false)
@@ -27,8 +27,11 @@ public class Resume {
     private String fileType;
 
     @Column(nullable = false)
-    private String filePath;
+    private String fileUrl;
 
+    private Long fileSize;
+    private boolean isActive;
+    private Integer version;
+    private boolean isDeleted;
     private LocalDateTime uploadedAt;
 }
-

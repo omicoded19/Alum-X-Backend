@@ -1,30 +1,28 @@
 package com.opencode.alumxbackend.users.controller;
 
-import com.opencode.alumxbackend.common.exception.UnauthorizedAccessException;
+import com.opencode.alumxbackend.users.dto.UserProfileDTO;
 import com.opencode.alumxbackend.users.dto.UserRequest;
 import com.opencode.alumxbackend.users.model.User;
-import com.opencode.alumxbackend.users.model.UserRole;
-import com.opencode.alumxbackend.users.repository.UserRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
 import com.opencode.alumxbackend.users.service.UserService;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService; // use service instead of repository
-    private static final String DUMMY_TOKEN = "alumx-dev-token";
+//     private static final String DUMMY_TOKEN = "alumx-dev-token";
     private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
     @PostMapping
@@ -45,5 +43,12 @@ public class UserController {
                 "userId", user.getId(),
                 "role", user.getRole().name()
         ));
+    }
+
+    @GetMapping("/{userId}/profile")
+    public ResponseEntity<UserProfileDTO> getProfile(@PathVariable Long userId){
+        return userService.getUserProfile(userId)
+                .map(profile -> ResponseEntity.ok(profile))
+                .orElseGet(()->ResponseEntity.notFound().build());
     }
 }

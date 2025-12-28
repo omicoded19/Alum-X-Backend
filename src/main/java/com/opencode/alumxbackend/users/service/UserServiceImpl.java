@@ -1,6 +1,7 @@
 package com.opencode.alumxbackend.users.service;
 
-import com.opencode.alumxbackend.common.exception.BadRequestException;
+import com.opencode.alumxbackend.common.exception.Errors.BadRequestException;
+import com.opencode.alumxbackend.users.dto.UserProfileDTO;
 import com.opencode.alumxbackend.users.dto.UserRequest;
 import com.opencode.alumxbackend.users.model.User;
 import com.opencode.alumxbackend.users.model.UserRole;
@@ -8,6 +9,8 @@ import com.opencode.alumxbackend.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,5 +61,20 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<UserProfileDTO> getUserProfile(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserProfileDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getSkills(),
+                        user.getEducation(),
+                        user.getTechStack()
+
+                ));
     }
 }

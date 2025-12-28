@@ -1,28 +1,15 @@
 package com.opencode.alumxbackend.common.exception;
 
-import java.util.Map;
-
+import com.opencode.alumxbackend.common.exception.Errors.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
-@ControllerAdvice()
+@RestControllerAdvice()
 public class GlobalExceptionHandler{
-
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<Map<String, Object>> catchEverything(Throwable ex) {
-
-        ex.printStackTrace(); // 👈 THIS IS KEY
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of(
-                        "type", ex.getClass().getName(),
-                        "message", ex.getMessage()
-                ));
-    }
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -68,16 +55,6 @@ public class GlobalExceptionHandler{
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage(),
-                java.time.LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -97,6 +74,29 @@ public class GlobalExceptionHandler{
                 java.time.LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidResumeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidResumeException(InvalidResumeException ex){
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "The Resume is Invalid",
+                ex.getMessage(),
+                java.time.LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(ResumeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResumeNotFoundException(ResumeNotFoundException  ex){
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Resume not Found",
+                ex.getMessage(),
+                java.time.LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
     }
 
 
