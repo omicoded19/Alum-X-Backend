@@ -10,4 +10,5 @@ public interface JobPostService {
     JobPost createJobPost(JobPostRequest request);
     void deletePostByUser(Long userId, String postId);
     List<JobPostResponse> getPostsByUser(Long userId);
+    void likePost(String postId, Long userId);
 }
